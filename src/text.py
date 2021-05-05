@@ -1,9 +1,20 @@
 import sys
+import re
 from document import Document
 from query import Query
+from corpus import Corpus
 
-def tokenize(corpus):
-    pass
+def tokenize(corpus : Corpus):
+    for doc in corpus.documents:
+        for t in re.split(r'\W+', doc.author):
+            doc.tokens.add(t)
+        for t in re.split(r'\W+', doc.title):
+            doc.tokens.add(t)
+        for t in re.split(r'\W+', doc.bookmark):
+            doc.tokens.add(t)
+        for t in re.split(r'\W+', doc.words):
+            doc.tokens.add(t)
+        break
 
 def normalize():
     pass

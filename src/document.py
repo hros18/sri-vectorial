@@ -6,6 +6,7 @@ class Document:
         self.author = author
         self.bookmark = bookmark
         self.words = words
+        self.tokens = set()
 
     def __str__(self):
         return """

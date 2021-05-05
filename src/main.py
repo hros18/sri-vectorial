@@ -1,5 +1,6 @@
 import sys
 from text import *
+from corpus import *
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:
@@ -13,9 +14,16 @@ if __name__ == '__main__':
     #todo process files
     docs = parse_documents(documents_path)
 
+    for x in docs:
+        print(x)
+        break
+
     queries = parse_querys(query_path)
 
-    for i in range(len(queries)):
-        if i == 4:
-            break
-        print(queries[i])
+    corpus = Corpus(docs)
+
+    tokenize(corpus)
+
+    d = corpus.documents[0].tokens
+    for x in d:
+        print('Token: ' + x)
