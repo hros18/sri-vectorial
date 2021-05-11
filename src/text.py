@@ -3,27 +3,39 @@ import re
 from document import Document
 from query import Query
 from corpus import Corpus
+from nltk import SnowballStemmer
+from nltk.stem import WordNetLemmatizer 
+
+lemmatizer = WordNetLemmatizer()
 
 def tokenize(corpus : Corpus):
     for doc in corpus.documents:
-        for t in re.split(r'\W+', doc.author):
+        for t in re.split(r'\W+', doc.title.replace('.', '')):
             doc.tokens.add(t)
-        for t in re.split(r'\W+', doc.title):
+        for t in re.split(r'\W+', doc.author.replace('.', '')):
             doc.tokens.add(t)
-        for t in re.split(r'\W+', doc.bookmark):
+        for t in re.split(r'\W+', doc.title.replace('.', '')):
             doc.tokens.add(t)
-        for t in re.split(r'\W+', doc.words):
+        for t in re.split(r'\W+', doc.bookmark.replace('.', '')):
             doc.tokens.add(t)
-        break
+        for t in re.split(r'\W+', doc.words.replace('.', '')):
+            doc.tokens.add(t)
 
 def normalize():
     pass
 
-def stemming():
-    pass
+def stemming(tokens):
+    snowball = SnowballStemmer(language='english')
+    to_return = set()
+    for t in tokens:
+        to_return.add(snowball.stem(t))
+    return to_return
 
-def lemmatizing():
-    pass
+def lemmatizing(tokens):
+    to_return = set()
+    for t in tokens:
+        to_return.add(lemmatizer.lemmatize(t))
+    return to_return
 
 def delete_stopwords():
     pass

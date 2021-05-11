@@ -14,16 +14,14 @@ if __name__ == '__main__':
     #todo process files
     docs = parse_documents(documents_path)
 
-    for x in docs:
-        print(x)
-        break
-
     queries = parse_querys(query_path)
 
     corpus = Corpus(docs)
 
     tokenize(corpus)
 
-    d = corpus.documents[0].tokens
-    for x in d:
-        print('Token: ' + x)
+    for doc in corpus.documents:
+        doc.stemms = stemming(doc.tokens)
+        doc.lemmas = lemmatizing(doc.tokens)
+    for l in corpus.documents[0].lemmas:
+        print('Lemmsa: {}'.format(l))

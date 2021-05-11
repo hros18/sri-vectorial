@@ -7,6 +7,8 @@ class Document:
         self.bookmark = bookmark
         self.words = words
         self.tokens = set()
+        self.stemms = set()
+        self.lemmas = set()
 
     def __str__(self):
         return """
