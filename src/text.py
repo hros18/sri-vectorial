@@ -4,7 +4,8 @@ from document import Document
 from query import Query
 from corpus import Corpus
 from nltk import SnowballStemmer
-from nltk.stem import WordNetLemmatizer 
+from nltk.stem import WordNetLemmatizer
+from spacy.lang.en.stop_words import STOP_WORDS
 
 lemmatizer = WordNetLemmatizer()
 
@@ -34,11 +35,11 @@ def stemming(tokens):
 def lemmatizing(tokens):
     to_return = set()
     for t in tokens:
-        to_return.add(lemmatizer.lemmatize(t))
+        term = lemmatizer.lemmatize(t)
+        if not term in STOP_WORDS:
+            to_return.add(term)
     return to_return
 
-def delete_stopwords():
-    pass
 
 def parse_documents(path):
     states = ['.I', '.T', '.A', '.B', '.W']
