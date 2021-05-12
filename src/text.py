@@ -12,35 +12,78 @@ lemmatizer = WordNetLemmatizer()
 def tokenize(corpus : Corpus):
     for doc in corpus.documents:
         for t in re.split(r'\W+', doc.title.replace('.', '')):
-            doc.tokens.add(t)
+            if t != '':
+                doc.tokens.append(t)
         for t in re.split(r'\W+', doc.author.replace('.', '')):
-            doc.tokens.add(t)
+            if t != '':
+                doc.tokens.append(t)
         for t in re.split(r'\W+', doc.title.replace('.', '')):
-            doc.tokens.add(t)
+            if t != '':
+                doc.tokens.append(t)
         for t in re.split(r'\W+', doc.bookmark.replace('.', '')):
-            doc.tokens.add(t)
+            if t != '':
+                doc.tokens.append(t)
         for t in re.split(r'\W+', doc.words.replace('.', '')):
-            doc.tokens.add(t)
+            if t != '':
+                doc.tokens.append(t)
 
-def normalize():
-    pass
+def normalize(corpus : Corpus):
+    tokenize(corpus)
+    # stemming(corpus)
+    lemmatizing(corpus)
 
-def stemming(tokens):
+def stemming(corpus):
+    for doc in corpus.documents:
+        snowball = SnowballStemmer(language='english')
+        for t in doc.tokens:
+            p = snowball.stem(t)
+            if not p in STOP_WORDS:
+                if not p in doc.terms.keys():
+                    doc.terms.update({p: 1})
+                else:
+                    doc.terms[p] += 1
+                doc.max_l = max(doc.max_l, doc.terms[p])
+                doc.stemms.add(p)
+    
+
+def lemmatizing(corpus):
+    for doc in corpus.documents:
+        for t in doc.tokens:
+            term = lemmatizer.lemmatize(t)
+            if not term in STOP_WORDS:
+                if not term in doc.terms.keys():
+                    doc.terms.update({term: 1})
+                else:
+                    doc.terms[term] += 1
+                doc.lemmas.add(term)
+
+def normalize_query(query : Query):
+    # stemming_query(query)
+    lemmatizing_query(query)
+
+def stemming_query(query):
     snowball = SnowballStemmer(language='english')
-    to_return = set()
-    for t in tokens:
-        to_return.add(snowball.stem(t))
-    return to_return
+    for t in query.tokens:
+        p = snowball.stem(t)
+        if not p in STOP_WORDS:
+            if not p in query.terms.keys():
+                query.terms.update({p: 1})
+            else:
+                query.terms[p] += 1
+            query.max_l = max(query.max_l, query.terms[p])
+            query.stemms.add(p)
+    
 
-def lemmatizing(tokens):
-    to_return = set()
-    for t in tokens:
+def lemmatizing_query(query):
+    for t in query.tokens:
         term = lemmatizer.lemmatize(t)
         if not term in STOP_WORDS:
-            to_return.add(term)
-    return to_return
-
-
+            if not term in query.terms.keys():
+                query.terms.update({term: 1})
+            else:
+                query.terms[term] += 1
+            query.lemmas.add(term)
+    # return to_return
 def parse_documents(path):
     states = ['.I', '.T', '.A', '.B', '.W']
     current_state = 0
@@ -81,7 +124,6 @@ def parse_documents(path):
         else:
             text += " " + line.split('\n')[0] 
     return to_return
-
 
 def parse_querys(path):
     states = ['.I', '.W']

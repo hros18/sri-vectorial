@@ -6,9 +6,12 @@ class Document:
         self.author = author
         self.bookmark = bookmark
         self.words = words
-        self.tokens = set()
+        self.tokens = []
         self.stemms = set()
         self.lemmas = set()
+        self.terms = {}
+        self.max_l = 1
+        self.vector = []
 
     def __str__(self):
         return """
